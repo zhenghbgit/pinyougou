@@ -3,14 +3,6 @@ package com.pinyougou.pojo;
 import java.io.Serializable;
 import java.util.List;
 
-/**
- * @Author: 杜少
- * @WeChat:haoliyoupad
- * @Title：PageResult类
- * @Date: 2018/9/30 16:54
- * @Description:封装分页信息公共实体类
- * @Version：1.0
- */
 
 public class PageResult implements Serializable {
 
