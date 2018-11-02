@@ -8,7 +8,7 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <!--购物车系统-->
+    <!--购物车系统来了吗-->
     <artifactId>pinyougou-cart-service</artifactId>
     <packaging>war</packaging>
 
