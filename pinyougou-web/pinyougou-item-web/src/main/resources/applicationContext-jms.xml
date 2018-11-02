@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:jms="http://www.springframework.org/schema/jms"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/jms
+        http://www.springframework.org/schema/jms/spring-jms.xsd">
+
+    <!--加载属性配置文件-->
+    <context:property-placeholder location="classpath:*.properties"/>
+
+    <!--配置通用-->
+    <!--配置ActiveMQ消息中间件连接工厂-->
+    <bean id="activeMQConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
+        <!--配置消息中间件的连接地址-->
+        <property name="brokerURL" value="${brokerURL}"/>
+    </bean>
+
+    <!--配置spring-jms的单例连接工厂-->
+    <bean id="connectionFactory" class="org.springframework.jms.connection.SingleConnectionFactory">
+        <!--配置Active MQ消息中间件连接工厂交给它管理-->
+        <property name="targetConnectionFactory" ref="activeMQConnectionFactory"/>
+    </bean>
+
+    <!--===================配置消息消费者===============================-->
+    <!--配置消息监听器容器-->
+    <jms:listener-container destination-type="topic" concurrency="1" connection-factory="connectionFactory">
+        <!--配置监听器 引用消息监听器Bean-->
+        <jms:listener destination="page.topic" ref="itemPageListener"/>
+        <jms:listener destination="page.delete.topic" ref="itemPageDeleteListener"/>
+    </jms:listener-container>
+
+    <!--配置消息监听器Bean-->
+    <bean id="itemPageListener" class="com.pinyougou.item.listener.ItemPageListener"/>
+    <bean id="itemPageDeleteListener" class="com.pinyougou.item.listener.ItemPageDeleteListener"/>
+
+</beans>

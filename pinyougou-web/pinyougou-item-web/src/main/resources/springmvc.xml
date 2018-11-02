@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://code.alibabatech.com/schema/dubbo
+        http://code.alibabatech.com/schema/dubbo/dubbo.xsd ">
+
+    <!--开启MVC注解驱动-->
+    <mvc:annotation-driven/>
+
+    <!--配置静态资源使用web默认的servlet处理-->
+    <mvc:default-servlet-handler/>
+
+    <!--配置FreeMarker配置信息对象-->
+    <bean id="freeMarkerConfigurer" class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
+        <!--配置模板文件的默认码表-->
+        <property name="defaultEncoding" value="UTF-8"/>
+        <!--配置加载模板文件的基础路径-->
+        <property name="templateLoaderPath" value="/WEB-INF/ftl/"/>
+    </bean>
+
+    <!--配置FreeMarker视图解析器-->
+    <bean class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver">
+        <!--配置内容类型，模板文件输出的html文件和码表-->
+        <property name="contentType" value="text/html;charset=UTF-8"/>
+        <!--配置模板文件后缀名-->
+        <property name="suffix" value=".ftl"/>
+    </bean>
+
+    <!--=====================配置dubbo服务消费者======================-->
+    <!--配置当前应用名称-->
+    <dubbo:application name="pinyougou-item-web"/>
+
+    <!--配置zookeeper注册中心暴露发现服务地址-->
+    <dubbo:registry protocol="zookeeper" address="192.168.12.131:2181"/>
+
+    <!--用包扫描的方式引用服务-->
+    <dubbo:annotation package="com.pinyougou.item"/>
+
+</beans>

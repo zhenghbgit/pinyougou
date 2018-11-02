@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:security="http://www.springframework.org/schema/security"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/security
+        http://www.springframework.org/schema/security/spring-security.xsd">
+
+    <!--配置请求url拦截规则-->
+
+    <!--配置不需要拦截的请求url-->
+    <security:http pattern="/login.html" security="none"/>
+    <security:http pattern="/css/**" security="none"/>
+    <security:http pattern="/img/**" security="none"/>
+    <security:http pattern="/js/**" security="none"/>
+    <security:http pattern="/plugins/**" security="none"/>
+
+    <!--配置需要拦截的请求url-->
+    <security:http>
+        <!--配置需要ADMIN角色才能访问的url-->
+        <security:intercept-url pattern="/**" access="hasRole('ADMIN')" />
+        <!--配置开启表单登陆 -->
+        <security:form-login login-page="/login.html"
+                             username-parameter="username" password-parameter="password"
+                             default-target-url="/admin/index.html" always-use-default-target="true"
+                             authentication-failure-url="/login.html"/>
+        <!--关闭跨站点请求伪造-->
+        <security:csrf disabled="true"/>
+
+        <!--配置头信息，指定框架页策略（iframe也可以访问）-->
+        <security:headers>
+            <!--配置同域名下访问-->
+            <security:frame-options policy="SAMEORIGIN"/>
+        </security:headers>
+
+        <!--注销-->
+        <security:logout invalidate-session="true" logout-url="/logout" />
+
+    </security:http>
+
+
+    <!--配置认证管理器-->
+    <security:authentication-manager>
+        <!--配置认证提供者-->
+        <security:authentication-provider>
+            <!--配置用户认证服务-->
+            <security:user-service>
+                <security:user name="admin" password="123456" authorities="ROLE_ADMIN"></security:user>
+            </security:user-service>
+        </security:authentication-provider>
+    </security:authentication-manager>
+
+
+</beans>

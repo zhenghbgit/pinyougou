@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://code.alibabatech.com/schema/dubbo
+        http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+
+    <!--加载属性配置文件-->
+    <context:property-placeholder location="classpath:application.properties"/>
+
+    <!--配置文件上传解析器-->
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <!--设置文件上传默认编码-->
+        <property name="defaultEncoding" value="UTF-8"/>
+        <!--设置文件上传限制大小-->
+        <property name="maxUploadSize" value="2097152"/>
+    </bean>
+
+    <!--开启mvc注解驱动-->
+    <mvc:annotation-driven>
+        <!--配置消息转换-->
+        <mvc:message-converters>
+            <!--配置用fastjson作为json处理框架-->
+            <bean class="com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter">
+                <!--配置支持的类型-->
+                <property name="supportedMediaTypes" value="application/json;charset=UTF-8"/>
+            </bean>
+        </mvc:message-converters>
+    </mvc:annotation-driven>
+
+    <!--配置静态资源用web容器默认的servlect来处理-->
+    <mvc:default-servlet-handler/>
+
+    <!-- 消费方应用名，用于计算依赖关系，不是匹配条件，不要与提供方一样 -->
+    <dubbo:application name="pinyougou-manager-web"  />
+
+    <!-- 使用zookeeper注册中心暴露发现服务地址 -->
+    <dubbo:registry protocol="zookeeper" address="192.168.12.131:2181" />
+
+    <!-- 使用包扫描方式,生成远程服务代理，可以和本地bean一样使用demoService -->
+    <dubbo:annotation package="com.pinyougou.manager.controller"/>
+
+</beans>
